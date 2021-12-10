@@ -1,30 +1,87 @@
-#import
-#main function
+# Men: BMR = 88.362 + (13.397 x weight in kg) + (4.799 x height in cm) – (5.677 x age in years)
+# Women: BMR = 447.593 + (9.247 x weight in kg) + (3.098 x height in cm) – (4.330 x age in years)
+
+
+# main function
+
 from tkinter import *
+from tkinter import messagebox
 
 
-def convert():
-    x = entry.get()
-    if x != "":    
-        bodyw=int(x)
-        bmr=(6.23*(bodyw))+66
-        print(bmr)
+# BRM Calculate function
+def convert(gender):
+    # if fields not null
+    if height_entry.get() != '' and bodyweight_entry.get() != '' and age_entry.get() != '':
+        # try to convert the values in numbers
+        try:
+            h = float(height_entry.get())
+            w = float(bodyweight_entry.get())
+            a = int(age_entry.get())
+        # when there is string in fields
+        except Exception as e:
+            # show error message
+            messagebox.showwarning("Error:", "Enter Valid Values\n" + str(e))
+        # check the enter number is greater then 0 mean ( not 0 or -1 etc.)
+        if h > 0 and w > 0 and a > 0:
+            # check the gender
+            if gender == 'male':
+                BMR = 88.362 + (13.397 * w) + (4.799 * h) - (5.677 * a)
+            if gender == 'female':
+                BMR = 447.593 + (9.247 * w) + (3.098 * h) - (4.330 * a)
+            # show second window
+            second_window(BMR)
+        else:
+            # if numbers are in 0 or negative
+            messagebox.showwarning("Error:", "Enter Valid Values\n Can't entry 0 or negative value")
+    # if fields null
+    else:
+        messagebox.showwarning("Error:", "Can't leave the values null")
 
-root=Tk()
-root.title("Converter")
-root.geometry("400x700")
+# function for second window
+def second_window(Bmr):
+    # hiding main window
+    root.withdraw()
+    # creating new window
+    top = Toplevel()
+    top.title("BMR Calculator result")
+    top.geometry("400x400+100+100")
+    top.configure(bg='lightblue')
+    Label(top, text="Result", font=('Impact', 24), bg='lightblue', fg='white').pack(pady=10)
+    Label(top, text="BMR: " + str(round(Bmr, 2)), font=('Impact', 24), bg='lightblue').pack(pady=50)
+    Button(top, text="Calculate again", font=font_style, width=17, command=lambda: top.destroy()
+           ).pack(side=BOTTOM, pady=10)
+    # holding new window
+    top.wait_window()
+    # restoring old window when new window closed
+    root.deiconify()
 
-Button(root, text="Calculate", command=convert).pack()
-entry = Entry(root)
-entry.pack()
-Label(root,text="Enter your bodyweight in pounds.").pack()
+# creating tkinter main window
+root = Tk()
+root.title("BMR Calculator")
+root.geometry("400x400+100+100")
+root.configure(bg='lightblue')
+# font style tuple
+font_style = ('Calibri', 14)
+
+Label(root, text="BMR Calculator", font=('Impact', 24), bg='lightblue', fg='white').pack(pady=10)
+
+Label(root, text="Enter your body weight in pounds.", font=font_style, bg='lightblue').pack(pady=(10, 2))
+
+bodyweight_entry = Entry(root, font=font_style)
+bodyweight_entry.pack()
+
+Label(root, text="Enter your height in inches.", font=font_style, bg='lightblue').pack(pady=(10, 2))
+
+height_entry = Entry(root, font=font_style)
+height_entry.pack()
+
+Label(root, text="Enter your age in years.", font=font_style, bg='lightblue').pack(pady=(10, 2))
+
+age_entry = Entry(root, font=font_style)
+age_entry.pack()
+
+Button(root, text="Calculate for male.", font=font_style, width=17, command=lambda: convert('male')).pack(pady=20)
+
+Button(root, text="Calculate for female.", font=font_style, width=17, command=lambda: convert('female')).pack(pady=0)
 
 root.mainloop()
-
-
-#Calculate BMR / Male BMR formula: 66 + (6.23 × weight in pounds) + (12.7 × height in inches) − (6.8 × age in years)
-def convert(somestring):
-    if somestring != "":    
-        bodyw=int(somestring)
-        bmr=(6.23*(bodyw))+66
-        print(bmr)
